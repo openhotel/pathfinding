@@ -46,4 +46,4 @@ jobs:
             }
 
       - name: Publish package
-        run: npx jsr publish --allow-dirty
+        run: deno publish
