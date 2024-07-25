@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        deno-version: [ 1.45.3 ]
+        deno-version: [1.45.3]
 
     permissions:
       contents: read
