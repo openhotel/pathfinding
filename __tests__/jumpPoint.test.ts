@@ -1,8 +1,10 @@
-// @ts-ignore
-import { smallGrid, testCasesSmallGrid } from "./test-data/small-grid";
-// @ts-ignore
-import { testCasesBigGrid } from "./test-data/big-grid";
-import { Grid } from "../src";
+import { smallGrid, testCasesSmallGrid } from "./test-data/small-grid.ts";
+import { testCasesBigGrid } from "./test-data/big-grid.ts";
+import { Grid } from "../mod.ts";
+
+import { assertEquals } from "std/assert/assert_equals.ts";
+import { describe, it } from "std/testing/bdd.ts";
+import { assertThrows } from "std/testing/asserts.ts";
 
 describe("Diagonal Jump Point", () => {
   const testCases = [...testCasesSmallGrid, ...testCasesBigGrid];
@@ -13,7 +15,7 @@ describe("Diagonal Jump Point", () => {
         const testGrid = new Grid(grid);
         const path = testGrid.findPath(startPoint, endPoint, maxJumpCost);
         // drawLayout(grid, path)
-        expect(path).toEqual(expectedPath);
+        assertEquals(JSON.stringify(path), JSON.stringify(expectedPath));
       });
     },
   );
@@ -22,18 +24,18 @@ describe("Diagonal Jump Point", () => {
     const grid = new Grid(smallGrid);
     const find = () => grid.findPath({ x: 999, y: 999 }, { x: 4, y: 1 });
 
-    expect(find).toThrowError("startNode does not exist in the grid");
+    assertThrows(find, Error, "startNode does not exist in the grid");
   });
 
   it("throws an error if end point does no exist", () => {
     const grid = new Grid(smallGrid);
     const find = () => grid.findPath({ x: 4, y: 1 }, { x: 999, y: 999 });
 
-    expect(find).toThrowError("endNode does not exist in the grid");
+    assertThrows(find, Error, "endNode does not exist in the grid");
   });
 
   it("throws an error if grid is empty", () => {
     const createEmptyGrid = () => new Grid([]);
-    expect(createEmptyGrid).toThrowError("grid matrix cannot be empty");
+    assertThrows(createEmptyGrid, Error, "grid matrix cannot be empty");
   });
 });

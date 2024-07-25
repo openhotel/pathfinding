@@ -1,6 +1,10 @@
-import { OpenList } from "../src/objects/openList";
+import { OpenList } from "../src/objects/openList.ts";
 
-describe("test openList", () => {
+import { assertEquals } from "std/assert/assert_equals.ts";
+import { describe, it, beforeEach } from "std/testing/bdd.ts";
+import { assertThrows } from "std/testing/asserts.ts";
+
+describe("OpenList", () => {
   let list: OpenList<number>;
 
   beforeEach(() => {
@@ -9,28 +13,28 @@ describe("test openList", () => {
 
   it("inserts one", () => {
     list.push(1);
-    expect(list.pop()).toBe(1);
+    assertEquals(list.pop(), 1);
   });
 
   it("is empty", () => {
-    expect(list.empty()).toBe(true);
+    assertEquals(list.empty(), true);
   });
 
   it("is not empty", () => {
     list.push(1);
-    expect(list.empty()).toBe(false);
+    assertEquals(list.empty(), false);
   });
 
   it("removes lowest value", () => {
     list.push(3);
     list.push(5);
     list.push(1);
-    expect(list.pop()).toBe(1);
-    expect(list.pop()).toBe(3);
-    expect(list.pop()).toBe(5);
+    assertEquals(list.pop(), 1);
+    assertEquals(list.pop(), 3);
+    assertEquals(list.pop(), 5);
   });
 
   it("errors when popping from empty list", () => {
-    expect(() => list.pop()).toThrowError("popping from an empty list");
+    assertThrows(() => list.pop(), Error, "popping from an empty list");
   });
 });
