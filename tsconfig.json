@@ -1,27 +1,12 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "ES2015",
-    "lib": ["dom", "es2015", "es2016", "es2017", "es2018", "es2019", "es2020"],
-    "declaration": true,
+    "moduleResolution": "node",
+    "module": "CommonJS",
+    "target": "ES6",
     "sourceMap": false,
-    "noImplicitAny": false,
-    "rootDir": "src",
-    "outDir": "dist",
-    "strict": true,
-    "noUnusedLocals": false,
-    "allowJs": false,
-    "skipLibCheck": true,
-    "resolveJsonModule": false,
-    "forceConsistentCasingInFileNames": true
-  },
-  "include": ["src/"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "__tests__",
-    "babel.config.js",
-    "src/sandbox.ts",
-    "__tests__/**/*.ts"
-  ]
+    "noUnusedLocals": true,
+    "lib": ["es2022", "DOM"],
+    "esModuleInterop": true,
+    "emitDeclarationOnly": true
+  }
 }
