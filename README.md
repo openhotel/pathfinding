@@ -11,7 +11,7 @@ Finders:
 Jump point: 10
 
 ```ts
-const grid = new Grid([
+const grid = Grid.from([
   [50, 55, 60, 65, 70],
   [45, 0, 0, 0, 75],
   [40, 0, 0, 0, 1], //x4y2
@@ -23,7 +23,7 @@ const grid = new Grid([
 #### PF example 1
 
 ```ts
-grid.findPath({ x: 4, y: 2 }, { x: 4, y: 1 }, 10, FinderEnum.JUMP_POINT);
+grid.findPath({ x: 4, y: 2 }, { x: 4, y: 1 }, {finder: FinderEnum.JUMP_POINT, maxJumpCost: 10});
 ```
 
 ```js
@@ -40,7 +40,7 @@ grid.findPath({ x: 4, y: 2 }, { x: 4, y: 1 }, 10, FinderEnum.JUMP_POINT);
 #### PF example 2
 
 ```ts
-grid.findPath({ x: 4, y: 2 }, { x: 4, y: 1 }, 1);
+grid.findPath({ x: 4, y: 2 }, { x: 4, y: 1 }, {maxJumpCost: 1});
 ```
 
 ```js
@@ -50,7 +50,7 @@ grid.findPath({ x: 4, y: 2 }, { x: 4, y: 1 }, 1);
 #### PF example 3
 
 ```ts
-grid.findPath({ x: 4, y: 2 }, { x: 4, y: 1 }, 85);
+grid.findPath({ x: 4, y: 2 }, { x: 4, y: 1 }, {maxJumpCost: 85});
 ```
 
 ```js

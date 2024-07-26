@@ -17,12 +17,12 @@ describe("OpenList", () => {
   });
 
   it("is empty", () => {
-    assertEquals(list.empty(), true);
+    assertEquals(list.isEmpty(), true);
   });
 
   it("is not empty", () => {
     list.push(1);
-    assertEquals(list.empty(), false);
+    assertEquals(list.isEmpty(), false);
   });
 
   it("removes lowest value", () => {
