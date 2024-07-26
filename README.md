@@ -23,7 +23,11 @@ const grid = Grid.from([
 #### PF example 1
 
 ```ts
-grid.findPath({ x: 4, y: 2 }, { x: 4, y: 1 }, {finder: FinderEnum.JUMP_POINT, maxJumpCost: 10});
+grid.findPath(
+  { x: 4, y: 2 },
+  { x: 4, y: 1 },
+  { finder: FinderEnum.JUMP_POINT, maxJumpCost: 10 },
+);
 ```
 
 ```js
@@ -40,7 +44,7 @@ grid.findPath({ x: 4, y: 2 }, { x: 4, y: 1 }, {finder: FinderEnum.JUMP_POINT, ma
 #### PF example 2
 
 ```ts
-grid.findPath({ x: 4, y: 2 }, { x: 4, y: 1 }, {maxJumpCost: 1});
+grid.findPath({ x: 4, y: 2 }, { x: 4, y: 1 }, { maxJumpCost: 1 });
 ```
 
 ```js
@@ -50,7 +54,7 @@ grid.findPath({ x: 4, y: 2 }, { x: 4, y: 1 }, {maxJumpCost: 1});
 #### PF example 3
 
 ```ts
-grid.findPath({ x: 4, y: 2 }, { x: 4, y: 1 }, {maxJumpCost: 85});
+grid.findPath({ x: 4, y: 2 }, { x: 4, y: 1 }, { maxJumpCost: 85 });
 ```
 
 ```js
