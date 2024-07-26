@@ -1,0 +1,32 @@
+<!doctype html>
+<!-- Quick and dirty visualization for the grid and pathfinder result -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Pathfinder visualization</title>
+    <style>
+      body {
+        background-color: black;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        align-content: center;
+        height: 100%;
+        width: 100%;
+      }
+      canvas {
+        margin: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="main" width="800" height="800"></canvas>
+
+    <script src="./canvas.js" type="module"></script>
+  </body>
+</html>

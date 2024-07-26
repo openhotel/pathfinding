@@ -5,8 +5,8 @@ on:
   pull_request:
 
 jobs:
-  tests:
-    name: "tests"
+  prettier:
+    name: "prettier"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -24,9 +24,10 @@ jobs:
       - name: run prettier checker
         run: yarn prettier:check
 
+      - name: run prettier checker
+        run: yarn prettier:check
+
       - name: Use Deno Version ${{ matrix.deno-version }}
         uses: denoland/setup-deno@v1
         with:
           deno-version: ${{ matrix.deno-version }}
-      - name: run tests
-        run: deno task test

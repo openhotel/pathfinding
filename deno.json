@@ -2,10 +2,6 @@
   "name": "@oh/pathfinding",
   "version": "0.0.0",
   "exports": "./mod.ts",
-  "tasks": {
-    "start": "deno run -A ./src/sandbox.ts",
-    "test": "deno test --allow-none --coverage=coverage"
-  },
   "imports": {
     "std/": "https://deno.land/std@0.224.0/"
   }

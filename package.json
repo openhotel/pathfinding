@@ -1,9 +1,11 @@
 {
   "scripts": {
+    "bundle": "esbuild --bundle mod.ts --outfile=./preview/bundle.js --format=esm",
     "prettier:check": "prettier -c ./",
     "prettier:write": "prettier --write ."
   },
   "devDependencies": {
-    "prettier": "3.3.3"
+    "prettier": "3.3.3",
+    "esbuild": "0.23.0"
   }
 }
