@@ -1,9 +1,8 @@
 // src/utils/grid.utils.ts
 var makeSquare = (layout) => {
   const maxLength = Math.max(layout.length, ...layout.map((row) => row.length));
-  const squareLayout = Array.from(
-    { length: maxLength },
-    () => Array(maxLength).fill(null)
+  const squareLayout = Array.from({ length: maxLength }, () =>
+    Array(maxLength).fill(null),
   );
   for (let i = 0; i < layout.length; i++) {
     for (let j = 0; j < layout[i].length; j++) {
@@ -14,9 +13,8 @@ var makeSquare = (layout) => {
 };
 var transpose = (matrix) => {
   const maxCols = Math.max(...matrix.map((row) => row.length));
-  const transposed = Array.from(
-    { length: maxCols },
-    () => Array(matrix.length).fill(null)
+  const transposed = Array.from({ length: maxCols }, () =>
+    Array(matrix.length).fill(null),
   );
   for (let i = 0; i < matrix.length; i++) {
     for (let j = 0; j < matrix[i].length; j++) {
@@ -112,7 +110,7 @@ var findPath = (startPoint, endPoint, grid, config) => {
     while (true) {
       const target = {
         x: src.x + dirX * jumpDistance,
-        y: src.y + dirY * jumpDistance
+        y: src.y + dirY * jumpDistance,
       };
       if (!grid.isWalkable(target)) {
         break;
@@ -127,7 +125,7 @@ var findPath = (startPoint, endPoint, grid, config) => {
       if (totalCost < visited[targetIndex]) {
         visited[targetIndex] = totalCost;
         queue.push(
-          new PathNode(target, prevNode, totalCost, heuristic(target))
+          new PathNode(target, prevNode, totalCost, heuristic(target)),
         );
       }
       prevPoint = target;
@@ -139,12 +137,21 @@ var findPath = (startPoint, endPoint, grid, config) => {
   };
   const addDiagonal = (prevNode, src, srcCost, dirX, dirY) => {
     const target = { x: src.x + dirX, y: src.y + dirY };
-    const moveCost = srcCost + (getMoveCostAt(src, target) ?? NOT_REACHED_COST) * diagonalCostMultiplier;
+    const moveCost =
+      srcCost +
+      (getMoveCostAt(src, target) ?? NOT_REACHED_COST) * diagonalCostMultiplier;
     const targetHeight = grid.getHeightAt(target);
     const aux1 = { x: src.x, y: src.y + dirY };
     const aux2 = { x: src.x + dirX, y: src.y };
     const targetIndex = index(target);
-    if (grid.isWalkable(target) && grid.isWalkable(aux1) && grid.isWalkable(aux2) && targetHeight == grid.getHeightAt(aux1) && targetHeight == grid.getHeightAt(aux2) && moveCost < visited[targetIndex]) {
+    if (
+      grid.isWalkable(target) &&
+      grid.isWalkable(aux1) &&
+      grid.isWalkable(aux2) &&
+      targetHeight == grid.getHeightAt(aux1) &&
+      targetHeight == grid.getHeightAt(aux2) &&
+      moveCost < visited[targetIndex]
+    ) {
       visited[targetIndex] = moveCost;
       queue.push(new PathNode(target, prevNode, moveCost, heuristic(target)));
     }
@@ -243,15 +250,24 @@ var Grid = class _Grid {
     return new _Grid(
       this.width,
       this.height,
-      new Float32Array(this.heightMatrix)
+      new Float32Array(this.heightMatrix),
     );
   }
   inBounds(point) {
-    return point.x >= 0 && point.x < this.width && point.y >= 0 && point.y < this.height;
+    return (
+      point.x >= 0 &&
+      point.x < this.width &&
+      point.y >= 0 &&
+      point.y < this.height
+    );
   }
   isWalkable(point) {
     const heightAt = this.getHeightAt(point);
-    return this.inBounds(point) && heightAt !== null && heightAt !== NON_WALKABLE_HEIGHT;
+    return (
+      this.inBounds(point) &&
+      heightAt !== null &&
+      heightAt !== NON_WALKABLE_HEIGHT
+    );
   }
   walkMatrix(callback) {
     for (let y = 0; y < this.height; y++) {
@@ -272,15 +288,15 @@ var Grid = class _Grid {
     }
     return matrix;
   }
-  findPath(startPoint, endPoint, config = {
-    maxJumpCost: 5,
-    travelCosts: void 0
-  }) {
+  findPath(
+    startPoint,
+    endPoint,
+    config = {
+      maxJumpCost: 5,
+      travelCosts: void 0,
+    },
+  ) {
     return findPath(startPoint, endPoint, this, config);
   }
 };
-export {
-  Grid,
-  makeSquare,
-  transpose
-};
+export { Grid, makeSquare, transpose };
