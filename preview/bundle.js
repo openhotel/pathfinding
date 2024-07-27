@@ -92,6 +92,7 @@ var findPath = (startPoint, endPoint, grid, config) => {
   const orthogonalCostMultiplier = config.orthogonalCostMultiplier ?? 1;
   const maxJumpCost = config.maxJumpCost ?? 5;
   const maxIterations = config.maxIterations ?? 99999;
+  const fearOfJump = config.fearOfJump ?? 0.24;
   const index = (point) => {
     return point.y * grid.height + point.x;
   };
@@ -100,7 +101,7 @@ var findPath = (startPoint, endPoint, grid, config) => {
     const srcHeight = grid.getHeightAt(src) ?? NOT_REACHED_COST;
     const dstHeight = grid.getHeightAt(dst) ?? NOT_REACHED_COST;
     if (Math.abs(srcHeight - dstHeight) > MAX_JUMP_HEIGHT) return null;
-    return 1 + Math.abs(srcHeight - dstHeight);
+    return 1;
   };
   const addOrthogonalJumps = (prevNode, src, srcCost, dirX, dirY) => {
     let jumpDistance = 1;
