@@ -114,7 +114,7 @@ const getPathFinding = (start, end) => {
 
   const config = {
     maxJumpCost: 4,
-    jumpDiagonals: Boolean(localStorage.getItem("jumpDiagonals")),
+    jumpBlockedDiagonals: Boolean(localStorage.getItem("jumpBlockedDiagonals")),
   };
   const path = grid.findPath(start, end, config);
   const data = new Uint8Array(grid.width * grid.height);
