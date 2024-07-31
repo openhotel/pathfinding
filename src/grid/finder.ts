@@ -38,7 +38,7 @@ export const findPath = (
   const orthogonalCostMultiplier = config.orthogonalCostMultiplier ?? 1;
   const maxJumpCost = config.maxJumpCost ?? 5;
   const maxIterations = config.maxIterations ?? 99999;
-  const jumpDiagonals = config.jumpDiagonals ?? false;
+  const jumpBlockedDiagonals = config.jumpBlockedDiagonals ?? false;
 
   const index = (point: Point): number => {
     return point.y * grid.height + point.x;
@@ -121,7 +121,7 @@ export const findPath = (
     const targetIndex = index(target);
 
     const canJumpDiagonals =
-      jumpDiagonals ||
+      jumpBlockedDiagonals ||
       (grid.isWalkable(aux1) &&
         grid.isWalkable(aux2) &&
         targetHeight == grid.getHeightAt(aux1) &&
