@@ -92,7 +92,7 @@ var findPath = (startPoint, endPoint, grid, config) => {
   const orthogonalCostMultiplier = config.orthogonalCostMultiplier ?? 1;
   const maxJumpCost = config.maxJumpCost ?? 5;
   const maxIterations = config.maxIterations ?? 99999;
-  const fearOfJump = config.fearOfJump ?? 0.24;
+  const jumpDiagonals = config.jumpDiagonals ?? false;
   const index = (point) => {
     return point.y * grid.height + point.x;
   };
@@ -144,12 +144,15 @@ var findPath = (startPoint, endPoint, grid, config) => {
     const aux1 = { x: src.x, y: src.y + dirY };
     const aux2 = { x: src.x + dirX, y: src.y };
     const targetIndex = index(target);
+    const canJumpDiagonals =
+      jumpDiagonals ||
+      (grid.isWalkable(aux1) &&
+        grid.isWalkable(aux2) &&
+        targetHeight == grid.getHeightAt(aux1) &&
+        targetHeight == grid.getHeightAt(aux2));
     if (
       grid.isWalkable(target) &&
-      grid.isWalkable(aux1) &&
-      grid.isWalkable(aux2) &&
-      targetHeight == grid.getHeightAt(aux1) &&
-      targetHeight == grid.getHeightAt(aux2) &&
+      canJumpDiagonals &&
       moveCost < visited[targetIndex]
     ) {
       visited[targetIndex] = moveCost;
