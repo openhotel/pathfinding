@@ -4,5 +4,8 @@
   "exports": "./mod.ts",
   "imports": {
     "std/": "https://deno.land/std@0.224.0/"
+  },
+  "tasks": {
+    "build:lib": "cargo build --release"
   }
 }
