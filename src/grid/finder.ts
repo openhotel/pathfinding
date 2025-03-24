@@ -1,4 +1,4 @@
-import { Point, FindPathConfig } from "../types/main.ts";
+import { FindPathConfig, Point } from "../types/main.ts";
 import { Grid } from "./grid.ts";
 import { OpenList } from "./openList.ts";
 
@@ -112,16 +112,14 @@ export const findPath = (
     dirY: number,
   ) => {
     const target: Point = { x: src.x + dirX, y: src.y + dirY };
-    const moveCost =
-      srcCost +
+    const moveCost = srcCost +
       (getMoveCostAt(src, target) ?? NOT_REACHED_COST) * diagonalCostMultiplier;
     const targetHeight = grid.getHeightAt(target);
     const aux1: Point = { x: src.x, y: src.y + dirY };
     const aux2: Point = { x: src.x + dirX, y: src.y };
     const targetIndex = index(target);
 
-    const canJumpDiagonals =
-      jumpBlockedDiagonals ||
+    const canJumpDiagonals = jumpBlockedDiagonals ||
       (grid.isWalkable(aux1) &&
         grid.isWalkable(aux2) &&
         targetHeight == grid.getHeightAt(aux1) &&
@@ -143,7 +141,7 @@ export const findPath = (
 
   const visited = new Float32Array(grid.width * grid.height);
   visited.fill(NOT_REACHED_COST);
-  config.travelCosts = visited;
+  // config.travelCosts = visited;
 
   // Distance to the end point, from A*
   const travelHeuristic = new Float32Array(grid.width * grid.height);
@@ -152,7 +150,7 @@ export const findPath = (
   grid.walkMatrix((x, y) => {
     travelHeuristic[y * grid.height + x] = grid.distance({ x, y }, endPoint);
   });
-  config.travelHeuristic = travelHeuristic;
+  // config.travelHeuristic = travelHeuristic;
 
   const heuristic = (a: Point): number => {
     return travelHeuristic[index(a)];

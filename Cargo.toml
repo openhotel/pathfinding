@@ -8,4 +8,7 @@ path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
-js-sys = "0.3.77"
+
+[[bin]]
+name = "start"
+path = "src/lib.rs"

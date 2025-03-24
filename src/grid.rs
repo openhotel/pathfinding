@@ -1,16 +1,15 @@
 use crate::point::Point;
-use js_sys::Float32Array;
-use js_sys::Math::{pow, sqrt};
+use crate::utils::make_square;
 
 #[derive(Debug)]
 pub struct Grid {
-    width: usize,
-    height: usize,
-    height_matrix: Float32Array,
+    pub width: usize,
+    pub height: usize,
+    pub height_matrix: Vec<f32>,
 }
 
 impl Grid {
-    pub fn new(width: usize, height: usize, cost_matrix: Float32Array) -> Self {
+    pub fn new(width: usize, height: usize, cost_matrix: Vec<f32>) -> Self {
         Grid {
             width,
             height,
@@ -18,25 +17,52 @@ impl Grid {
         }
     }
 
+    pub fn from(matrix: Vec<Vec<usize>>) -> Result<Self, String> {
+        if matrix.get(0).is_none() || matrix.get(0).unwrap().get(0).is_none() {
+            return Err("Grid matrix cannot be empty!".to_string());
+        }
+
+        let mat = make_square(matrix);
+        let height = mat.len();
+        let width = mat.get(0).unwrap().len();
+
+        if height != width {
+            return Err("Grid matrix must be square!".to_string());
+        }
+
+        let mut cost_matrix = vec![0.0; width * height];
+
+        for (y, row) in mat.iter().enumerate() {
+            for (x, &cost) in row.iter().enumerate() {
+                cost_matrix[y * width + x] = cost as f32
+            }
+        }
+
+        Ok(Grid::new(width, height, cost_matrix))
+    }
+
     pub fn get_height_at(&self, point: &Point) -> Option<f32> {
         if !self.in_bounds(&point) {
             return None;
         }
-        self.height_matrix.at(self.index(point))
+        Some(self.height_matrix[self.index(point)])
     }
-    pub fn distance(point_a: &Point, point_b: &Point) -> usize {
-        let x_expo = pow((point_a.x - point_b.x) as f64, 2f64);
-        let y_expo = pow((point_a.y - point_b.y) as f64, 2f64);
+    pub fn distance(&self, point_a: &Point, point_b: &Point) -> usize {
+        let x_expo = i32::pow((point_a.x - point_b.x) as i32, 2);
+        let y_expo = i32::pow((point_a.y - point_b.y) as i32, 2);
 
-        sqrt(x_expo + y_expo) as usize
+        i32::isqrt(x_expo + y_expo) as usize
     }
 
-    pub fn index(&self, point: &Point) -> i32 {
-        (point.y * self.height + point.x) as i32
+    pub fn index(&self, point: &Point) -> usize {
+        (point.y * self.height as isize + point.x) as usize
     }
 
     pub fn in_bounds(&self, point: &Point) -> bool {
-        point.x >= 0 && point.x < self.width && point.y >= 0 && point.y < self.height
+        point.x >= 0
+            && point.x < self.width as isize
+            && point.y >= 0
+            && point.y < self.height as isize
     }
 
     pub fn is_walkable(&self, point: &Point) -> bool {
@@ -53,14 +79,10 @@ impl Grid {
     {
         for y in 0..self.height {
             for x in 0..self.width {
-                let index = (y * self.height + x) as i32;
-                let cost = self.height_matrix.at(index);
-                callback(x, y, cost);
+                let index = y * self.height + x;
+                let cost = self.height_matrix[index];
+                callback(x, y, Some(cost));
             }
         }
-    }
-
-    pub fn find_path(start_point: Point, end_point: Point) -> Vec<Point> {
-        Vec::new()
     }
 }
