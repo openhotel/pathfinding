@@ -1,4 +1,4 @@
-import { CompFn, ListNode } from "../types/main.ts";
+import type { CompFn, ListNode } from "../types/main.ts";
 
 export class OpenList<T> {
   private start: ListNode<T> | null;
@@ -25,7 +25,8 @@ export class OpenList<T> {
     }
 
     let aux: ListNode<T> = this.start;
-    while (aux.next !== null && this.comparator(value, aux.next.value) > 0) {
+    while (aux.next !== null
+    && this.comparator(value, aux.next.value) > 0) {
       aux = aux.next;
     }
 
