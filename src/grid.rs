@@ -47,15 +47,14 @@ impl Grid {
         }
         Some(self.height_matrix[self.index(point)])
     }
-    pub fn distance(&self, point_a: &Point, point_b: &Point) -> usize {
-        let x_expo = i32::pow((point_a.x - point_b.x) as i32, 2);
-        let y_expo = i32::pow((point_a.y - point_b.y) as i32, 2);
-
-        i32::isqrt(x_expo + y_expo) as usize
+    pub fn distance(&self, point_a: &Point, point_b: &Point) -> f32 {
+        let dx = (point_a.x - point_b.x) as f32;
+        let dy = (point_a.y - point_b.y) as f32;
+        (dx * dx + dy * dy).sqrt()
     }
 
     pub fn index(&self, point: &Point) -> usize {
-        (point.y * self.height as isize + point.x) as usize
+        (point.y as usize) * self.height + (point.x as usize)
     }
 
     pub fn in_bounds(&self, point: &Point) -> bool {

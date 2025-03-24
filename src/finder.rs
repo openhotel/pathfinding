@@ -3,23 +3,19 @@ use crate::grid::Grid;
 use crate::open_list::{Compare, OpenList};
 use crate::path_node::PathNode;
 use crate::point::Point;
-use std::cmp::Ordering;
 use std::f32;
 
 #[derive(Debug)]
 pub struct PathNodeComparator;
 
 impl Compare<PathNode> for PathNodeComparator {
-    fn compare(&self, a: &PathNode, b: &PathNode) -> Ordering {
-        let a_total = a.cost + a.heuristic_value as usize;
-        let b_total = b.cost + b.heuristic_value as usize;
-
-        a_total.partial_cmp(&b_total).unwrap_or(Ordering::Equal)
+    fn compare(&self, a: &PathNode, b: &PathNode) -> f32 {
+        (a.cost + a.heuristic_value) - (b.cost + b.heuristic_value)
     }
 }
 
 pub struct Finder {
-    not_reached_cost: i32,
+    not_reached_cost: f32,
     visited: Vec<f32>,
     travel_heuristic: Vec<f32>,
     queue: OpenList<PathNode>,
@@ -37,13 +33,13 @@ impl Finder {
         grid: Grid,
         config: Option<FindPathConfig>,
     ) -> Self {
-        let not_reached_cost = 999999;
+        let not_reached_cost = 999999.0;
 
         let mut visited = vec![0.0; grid.width * grid.height];
-        visited.fill(not_reached_cost as f32);
+        visited.fill(not_reached_cost);
 
         let mut travel_heuristic = vec![0.0; grid.width * grid.height];
-        travel_heuristic.fill(not_reached_cost as f32);
+        travel_heuristic.fill(not_reached_cost);
 
         Finder {
             not_reached_cost,
@@ -58,72 +54,75 @@ impl Finder {
         }
     }
 
-    fn index(&self, point: &Point) -> u32 {
-        (point.y * (self.grid.height as isize) + point.x) as u32
+    fn index(&self, point: &Point) -> usize {
+        (point.y * (self.grid.height as isize) + point.x) as usize
     }
 
-    fn get_move_cost_at(&self, src: &Point, dst: &Point) -> Option<usize> {
+    fn get_move_cost_at(&self, src: &Point, dst: &Point) -> Option<f32> {
         if !self.grid.in_bounds(&src) || !self.grid.in_bounds(&dst) {
             return None;
         }
         let src_height = self
             .grid
             .get_height_at(&src)
-            .or(Some(self.not_reached_cost as f32))
-            .unwrap_or(0f32);
+            .unwrap_or(self.not_reached_cost);
         let dst_height = self
             .grid
             .get_height_at(&dst)
-            .or(Some(self.not_reached_cost as f32))
-            .unwrap_or(0f32);
+            .unwrap_or(self.not_reached_cost);
 
-        if f32::abs(src_height - dst_height) > self.config.max_jump_cost as f32 {
+        println!(
+            "{} {}",
+            (src_height - dst_height).abs(),
+            self.config.max_jump_cost
+        );
+        if (src_height - dst_height).abs() > self.config.max_jump_cost {
             return None;
         }
 
-        Some(1)
+        Some(1.0)
     }
 
     fn heuristic(&self, point: &Point) -> f32 {
-        self.travel_heuristic[self.index(&point) as usize]
+        self.travel_heuristic[self.index(&point)]
     }
 
     fn add_orthogonal_jumps(&mut self, prev_node: &PathNode, dir_x: isize, dir_y: isize) {
         let mut jump_distance = 1;
-        let mut accumulated_cost = 0;
+        let mut accumulated_cost = 0f32;
         let mut prev_point = prev_node.point.clone();
 
         loop {
             let target: Point = Point::new(
-                &prev_node.point.x + dir_x + jump_distance,
-                &prev_node.point.y + dir_y + jump_distance,
+                prev_node.point.x + dir_x * jump_distance,
+                prev_node.point.y + dir_y * jump_distance,
             );
             if !self.grid.is_walkable(&target) {
-                break;
+                return;
             }
             let move_cost = match self.get_move_cost_at(&prev_point, &target) {
                 Some(cost) => cost,
-                None => break,
+                None => return,
             };
 
-            accumulated_cost += (move_cost as i32) * self.config.orthogonal_cost_multiplier;
-            let target_index = self.index(&target) as i32;
-            let total_cost = prev_node.cost as i32 + accumulated_cost;
+            accumulated_cost += move_cost * self.config.orthogonal_cost_multiplier;
+            let target_index = self.index(&target);
+            let total_cost = prev_node.cost + accumulated_cost;
 
-            if total_cost < self.visited[target_index as usize] as i32 {
-                self.visited[target_index as usize] = total_cost as f32;
+            if total_cost < self.visited[target_index] {
+                self.visited[target_index] = total_cost;
                 self.queue.push(PathNode::new(
                     self.start_point.clone(),
                     None,
-                    0,
+                    0f32,
                     self.heuristic(&target),
                 ))
             }
             prev_point = target;
             jump_distance = jump_distance + 1;
 
-            if accumulated_cost > self.config.max_jump_cost as i32 {
-                break;
+            if accumulated_cost > self.config.max_jump_cost {
+                return;
             }
         }
     }
@@ -136,8 +135,8 @@ impl Finder {
         let move_cost = prev_node.cost
             + (self
                 .get_move_cost_at(&prev_node.point, &target)
-                .unwrap_or(self.not_reached_cost as usize))
-                * self.config.diagonal_cost_multiplier as usize;
+                .unwrap_or(self.not_reached_cost)) as f32
+                * self.config.diagonal_cost_multiplier;
         let target_height = self.grid.get_height_at(&target);
         let aux1: Point = Point {
             x: prev_node.point.x,
@@ -157,9 +156,9 @@ impl Finder {
 
         if self.grid.is_walkable(&target)
             && can_jump_diagonals
-            && (move_cost as f32) < self.visited[target_index as usize]
+            && move_cost < self.visited[target_index]
         {
-            self.visited[target_index as usize] = move_cost as f32;
+            self.visited[target_index] = move_cost;
             self.queue.push(PathNode::new(
                 target.clone(),
                 Some(Box::new(prev_node.clone())),
@@ -189,23 +188,24 @@ impl Finder {
     }
 
     pub fn find(&mut self) -> Vec<Point> {
+        let empty = Vec::new();
+
         if !self.grid.is_walkable(&self.start_point) || !self.grid.is_walkable(&self.end_point) {
-            return Vec::new();
+            return empty;
         }
 
         self.grid.walk_matrix(|x, y, _cost| {
             self.travel_heuristic[y * self.grid.height + x] = self
                 .grid
-                .distance(&Point::new(x as isize, y as isize), &self.end_point)
-                as f32;
+                .distance(&Point::new(x as isize, y as isize), &self.end_point);
         });
 
-        let start_index = self.index(&self.start_point.clone()) as usize;
+        let start_index = self.index(&self.start_point.clone());
         self.visited[start_index] = 0f32;
         self.queue.push(PathNode::new(
             self.start_point.clone(),
             None,
-            0,
+            0f32,
             self.heuristic(&self.start_point),
         ));
 
@@ -213,10 +213,10 @@ impl Finder {
 
         loop {
             if self.queue.is_empty() {
-                break;
+                return empty;
             }
             if iterations > self.config.max_iterations {
-                return Vec::new();
+                return empty;
             }
             iterations += 1;
             let node = self.queue.pop().unwrap();
@@ -235,7 +235,5 @@ impl Finder {
             self.add_diagonal(&node, 1, -1);
             self.add_diagonal(&node, -1, -1);
         }
-
-        Vec::new()
     }
 }

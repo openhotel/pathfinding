@@ -2,6 +2,7 @@ use crate::finder::Finder;
 use crate::grid::Grid;
 use crate::point::Point;
 use crate::utils::{convert_array, transpose};
+use std::time::Instant;
 
 mod find_path_config;
 mod finder;
@@ -21,6 +22,7 @@ mod utils;
 // }
 
 pub fn main() {
+    let timer = Instant::now();
     let matrix = [
         [
             0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -129,8 +131,8 @@ pub fn main() {
     ];
     let layout = transpose(convert_array(matrix));
 
-    let start = Point::new(19, 17);
-    let end = Point::new(19, 12);
+    let start = Point::new(3, 3);
+    let end = Point::new(3, 4);
     let grid = Grid::from(layout);
 
     let mut finder = Finder::new(start, end, grid.unwrap(), None);
@@ -144,4 +146,5 @@ pub fn main() {
             .collect::<Vec<_>>()
             .join(", ")
     );
+    println!("{:?}", timer.elapsed())
 }
